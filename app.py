@@ -50,31 +50,40 @@ def get_font_data():
 @app.route('/api/update-font-data', methods=['POST'])
 def update_font_data():
     try:
+        # Check if 'fontUrl' and 'newData' keys exist in the JSON data
+        if 'fontUrl' not in request.json or 'newData' not in request.json:
+            return jsonify({'error': 'fontUrl and/or newData missing in JSON data'}), 400
+        
         font_url = request.json.get('fontUrl')
         new_data = request.json.get('newData')
         font = TTFont(io.BytesIO(requests.get(font_url).content))
         
         # Update the 'hhea' table
+        # Update the 'hhea' table
         if 'hhea' in new_data:
             hhea_data = new_data['hhea']
+            hhea_table = font['hhea']
             for key, value in hhea_data.items():
-                if hasattr(font['hhea'], key):
-                    setattr(font['hhea'], key, value)
-        
-        # Update the 'head' table
-        if 'head' in new_data:
-            head_data = new_data['head']
-            for key, value in head_data.items():
-                if hasattr(font['head'], key):
-                    setattr(font['head'], key, value)
-        
+                if hasattr(hhea_table, key):
+                    setattr(hhea_table, key, value)
+
         # Update the 'os2' table
         if 'os2' in new_data:
             os2_data = new_data['os2']
+            os2_table = font['OS/2']
             for key, value in os2_data.items():
-                if hasattr(font['OS/2'], key):
-                    setattr(font['OS/2'], key, value)
-        
+                if hasattr(os2_table, key):
+                    setattr(os2_table, key, value)
+
+        # Update the 'head' table
+        if 'head' in new_data:
+            head_data = new_data['head']
+            head_table = font['head']
+            for key, value in head_data.items():
+                if hasattr(head_table, key):
+                    setattr(head_table, key, value)
+
+
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
         font.save(updated_font_file)
@@ -83,6 +92,7 @@ def update_font_data():
         return send_file(updated_font_file, as_attachment=True, download_name='updated_font.ttf'), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 if __name__ == '__main__':
