@@ -3,8 +3,11 @@ from fontTools.ttLib import TTFont
 import io
 import requests
 import json
+from flask_cors import CORS  # Import CORS from flask_cors
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "https://font-tweaker-ui.vercel.app/"}})
+
 
 # Helper function to serialize Panose data
 def serialize_panose(panose_obj):
