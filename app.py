@@ -54,10 +54,26 @@ def update_font_data():
         new_data = request.json.get('newData')
         font = TTFont(io.BytesIO(requests.get(font_url).content))
         
-        # Update font data (modify this part to update specific data)
-        # For example, you can update the 'ascender' and 'descender' attributes in the 'head' table
-        font['head'].ascender = new_data['head']['ascender']
-        font['head'].descender = new_data['head']['descender']
+        # Update the 'hhea' table
+        if 'hhea' in new_data:
+            hhea_data = new_data['hhea']
+            for key, value in hhea_data.items():
+                if hasattr(font['hhea'], key):
+                    setattr(font['hhea'], key, value)
+        
+        # Update the 'head' table
+        if 'head' in new_data:
+            head_data = new_data['head']
+            for key, value in head_data.items():
+                if hasattr(font['head'], key):
+                    setattr(font['head'], key, value)
+        
+        # Update the 'os2' table
+        if 'os2' in new_data:
+            os2_data = new_data['os2']
+            for key, value in os2_data.items():
+                if hasattr(font['OS/2'], key):
+                    setattr(font['OS/2'], key, value)
         
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
@@ -67,6 +83,7 @@ def update_font_data():
         return send_file(updated_font_file, as_attachment=True, download_name='updated_font.ttf'), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
