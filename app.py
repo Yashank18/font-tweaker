@@ -6,7 +6,7 @@ import json
 from flask_cors import CORS  # Import CORS from flask_cors
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "https://font-tweaker-ui.vercel.app/"}})
+CORS(app, resources={r"/api/*": {"origins": "https://font-tweaker-ui.vercel.app"}})
 
 
 # Helper function to serialize Panose data
