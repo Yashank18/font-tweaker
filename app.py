@@ -85,8 +85,11 @@ def update_font_data():
         print('Step 3')
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
+        print('Step 4')
         font.save(updated_font_file)
+        print('Step 5')
         updated_font_file.seek(0)
+        print('Step 6')
 
         return send_file(updated_font_file, as_attachment=True, download_name='updated_font.ttf'), 200
     except Exception as e:
