@@ -66,7 +66,7 @@ def update_font_data():
             for key, value in hhea_data.items():
                 if hasattr(hhea_table, key):
                     setattr(hhea_table, key, value)
-
+        print('Step 1')
         # Update the 'os2' table
         if 'os2' in new_data:
             os2_data = new_data['os2']
@@ -74,7 +74,7 @@ def update_font_data():
             for key, value in os2_data.items():
                 if hasattr(os2_table, key):
                     setattr(os2_table, key, value)
-
+        print('Step 2')
         # Update the 'head' table
         if 'head' in new_data:
             head_data = new_data['head']
@@ -82,8 +82,7 @@ def update_font_data():
             for key, value in head_data.items():
                 if hasattr(head_table, key):
                     setattr(head_table, key, value)
-
-
+        print('Step 3')
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
         font.save(updated_font_file)
