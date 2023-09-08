@@ -86,7 +86,10 @@ def update_font_data():
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
         print('Step 4')
-        font.save(updated_font_file)
+        try: 
+            font.save(updated_font_file)
+        except Exception as e:
+            print('Error {}'.format(e))
         print('Step 5')
         updated_font_file.seek(0)
         print('Step 6')
