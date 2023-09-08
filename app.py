@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, send_file
 from fontTools.ttLib import TTFont, newTable
+from fontTools.ttLib.tables._os2 import OS2_v4
 import io
 import requests
 import json
@@ -92,6 +93,8 @@ def update_font_data():
             os2.usWeightClass = 400
         else:
             os2.usWeightClass = max(1, min(1000, os2.usWeightClass))
+
+        font['OS/2'] = os2_table
 
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
