@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, send_file
-from fontTools.ttLib import TTFont
+from fontTools.ttLib import TTFont, newTable
 import io
 import requests
 import json
@@ -83,6 +83,16 @@ def update_font_data():
                 if hasattr(head_table, key):
                     setattr(head_table, key, value)
         print('Step 3')
+
+        # Set the usWeightClass value of the OS/2 table
+        if 'OS/2' not in font:
+            font['OS/2'] = newTable('OS/2')
+        os2 = font['OS/2']
+        if not hasattr(os2, 'usWeightClass'):
+            os2.usWeightClass = 400
+        else:
+            os2.usWeightClass = max(1, min(1000, os2.usWeightClass))
+
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
         print('Step 4')
