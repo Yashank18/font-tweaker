@@ -67,13 +67,13 @@ def update_font_data():
                 if hasattr(hhea_table, key):
                     setattr(hhea_table, key, value)
         print('Step 1')
-        # Update the 'os2' table
-        if 'os2' in new_data:
-            os2_data = new_data['os2']
-            os2_table = font['OS/2']
-            for key, value in os2_data.items():
-                if hasattr(os2_table, key):
-                    setattr(os2_table, key, value)
+        # # Update the 'os2' table
+        # if 'os2' in new_data:
+        #     os2_data = new_data['os2']
+        #     os2_table = font['OS/2']
+        #     for key, value in os2_data.items():
+        #         if hasattr(os2_table, key):
+        #             setattr(os2_table, key, value)
         print('Step 2')
         # Update the 'head' table
         if 'head' in new_data:
@@ -84,24 +84,26 @@ def update_font_data():
                     setattr(head_table, key, value)
         print('Step 3')
 
-        # Set the usWeightClass value of the OS/2 table
-        if 'OS/2' not in font:
-            font['OS/2'] = newTable('OS/2')
-        os2 = font['OS/2']
-        if not hasattr(os2, 'usWeightClass'):
-            os2.usWeightClass = 400
-        else:
-            os2.usWeightClass = max(1, min(1000, os2.usWeightClass))
+        # # Set the usWeightClass value of the OS/2 table
+        # if 'OS/2' not in font:
+        #     font['OS/2'] = newTable('OS/2')
+        # os2 = font['OS/2']
+        # if not hasattr(os2, 'usWeightClass'):
+        #     os2.usWeightClass = 400
+        # else:
+        #     os2.usWeightClass = max(1, min(1000, os2.usWeightClass))
 
-        font['OS/2'] = os2_table
+        # font['OS/2'] = os2_table
 
         # Save the modified font to a new file
         updated_font_file = io.BytesIO()
         print('Step 4')
-        try: 
-            font.save(updated_font_file)
-        except Exception as e:
-            print('Error {}'.format(e))
+        # try: 
+        # except Exception as e:
+        #     print('Error {}'.format(e))
+        
+        font.save(updated_font_file)
+
         print('Step 5')
         updated_font_file.seek(0)
         print('Step 6')
