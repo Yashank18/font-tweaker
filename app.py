@@ -56,8 +56,8 @@ def update_font_data():
         
         font_url = request.json.get('fontUrl')
         new_data = request.json.get('newData')
-        usWinAscent = new_data.usWinAscent
-        usWinDescent = new_data.usWinDescent
+        usWinAscent = new_data['usWinAscent']
+        usWinDescent = new_data['usWinDescent']
 
         font_url = request.json.get('fontUrl')
         font = TTFont(io.BytesIO(requests.get(font_url).content))
