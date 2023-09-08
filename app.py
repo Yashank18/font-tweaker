@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, send_file
 from fontTools.ttLib import TTFont, newTable
-from fontTools.ttLib.tables._os2 import OS2_v4
 import io
 import requests
 import json
