@@ -75,3 +75,6 @@ def update_font_data():
         response.headers['Content-Type'] = 'application/octet-stream'
         response.headers['Content-Disposition'] = 'attachment; filename=myfont_modified.ttf'
         return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
