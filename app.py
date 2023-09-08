@@ -57,7 +57,7 @@ def update_font_data():
         font_url = request.json.get('fontUrl')
         new_data = request.json.get('newData')
         font = TTFont(io.BytesIO(requests.get(font_url).content))
-        print(f'font {font['hhea']}')
+        print('font {}'.format(font['hhea']))
         # Update the 'hhea' table
         # Update the 'hhea' table
         if 'hhea' in new_data:
