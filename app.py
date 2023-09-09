@@ -4,6 +4,7 @@ import io
 import requests
 import json
 from flask_cors import CORS  # Import CORS from flask_cors
+import mimetypes
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "https://font-tweaker-ui.vercel.app"}})
@@ -59,8 +60,10 @@ def update_font_data():
         usWinAscent = new_data['usWinAscent']
         usWinDescent = new_data['usWinDescent']
 
-        font_url = request.json.get('fontUrl')
         font = TTFont(io.BytesIO(requests.get(font_url).content))
+
+        # Determine the MIME type based on the font_url
+        mime_type, _ = mimetypes.guess_type(font_url)
 
         if 'OS/2' in font:
             os2 = font['OS/2']
@@ -70,10 +73,14 @@ def update_font_data():
         buffer = io.BytesIO()
         font.save(buffer)
 
+
         # Create a Flask HTTP response with the modified font
         response = make_response(buffer.getvalue())
-        response.headers['Content-Type'] = 'application/octet-stream'
+        response.headers['Content-Type'] = mime_type if mime_type else 'application/octet-stream'
         response.headers['Content-Disposition'] = 'attachment; filename=myfont_modified.ttf'
+
+        # Close the buffer
+        buffer.close()
         return response
     except Exception as e:
         return jsonify({'error': str(e)}), 400
