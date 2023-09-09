@@ -76,12 +76,20 @@ def update_font_data():
 
         # Create a Flask HTTP response with the modified font
         response = make_response(buffer.getvalue())
+
+        # Set the Content-Type header
         response.headers['Content-Type'] = mime_type if mime_type else 'application/octet-stream'
+
+        # Set the Content-Disposition header with the correct filename
         response.headers['Content-Disposition'] = 'attachment; filename=myfont_modified.ttf'
 
+        # Set the Content-Length header
+        response.headers['Content-Length'] = len(response.data)
+        
         # Close the buffer
         buffer.close()
         return response
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
 
