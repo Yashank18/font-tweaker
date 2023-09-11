@@ -48,6 +48,27 @@ def get_font_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+def extract_font_data_from_buffer(font_buffer):
+    try:
+        font = TTFont(io.BytesIO(font_buffer))
+        
+        # Extract font data (modify this part to extract specific data you need)
+        font_data = {
+            'hhea': font['hhea'].__dict__,
+            'head': font['head'].__dict__,
+            'os2': font['OS/2'].__dict__,
+            # Add more attributes as needed
+        }
+
+        # Serialize Panose data from the 'OS/2' table
+        os2_table = font['OS/2']
+        if hasattr(os2_table, 'panose'):
+            font_data['os2']['panose'] = os2_table.panose
+
+        return font_data
+    except Exception as e:
+        return {'error': str(e)}
+
 @app.route('/api/update-font-data', methods=['POST'])
 def update_font_data():
     try:
