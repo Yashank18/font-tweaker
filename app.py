@@ -48,6 +48,7 @@ def get_font_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/get-font-data-buffer', methods=['POST'])
 def extract_font_data_from_buffer(font_buffer):
     try:
         font = TTFont(io.BytesIO(font_buffer))
