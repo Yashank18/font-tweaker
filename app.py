@@ -49,7 +49,7 @@ def get_font_data():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/get-font-data-buffer', methods=['POST'])
-def extract_font_data_from_buffer(font_buffer):
+def extract_font_data_from_buffer():
     try:
         font_file = request.files['fontFile']
         font_buffer = font_file.read()
@@ -68,9 +68,9 @@ def extract_font_data_from_buffer(font_buffer):
         if hasattr(os2_table, 'panose'):
             font_data['os2']['panose'] = os2_table.panose
 
-        return font_data
+        return json.dumps(font_data, cls=FontDataEncoder), 200
     except Exception as e:
-        return {'error': str(e)}
+        return jsonify({'error': str(e)}), 500 
 
 @app.route('/api/update-font-data', methods=['POST'])
 def update_font_data():
