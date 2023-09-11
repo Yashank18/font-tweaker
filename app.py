@@ -51,6 +51,8 @@ def get_font_data():
 @app.route('/api/get-font-data-buffer', methods=['POST'])
 def extract_font_data_from_buffer(font_buffer):
     try:
+        font_file = request.files['fontFile']
+        font_buffer = font_file.read()
         font = TTFont(io.BytesIO(font_buffer))
         
         # Extract font data (modify this part to extract specific data you need)
