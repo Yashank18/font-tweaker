@@ -116,4 +116,46 @@ def update_font_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/api/update-font-data-from-file', methods=['POST'])
+def update_font_data_from_file():
+    try:
+        # Check if 'fontFile' and 'newData' keys exist in the request
+        if 'fontFile' not in request.files or 'newData' not in request.form:
+            return jsonify({'error': 'fontFile and/or newData missing in the request'}), 400
+        
+        font_file = request.files['fontFile']
+        new_data = json.loads(request.form['newData'])
+        usWinAscent = new_data['usWinAscent']
+        usWinDescent = new_data['usWinDescent']
+
+        font = TTFont(io.BytesIO(font_file.read()))
+
+        # Determine the MIME type based on the font file
+        mime_type, _ = mimetypes.guess_type(font_file.filename)
+
+        if 'OS/2' in font:
+            os2 = font['OS/2']
+            os2.usWinAscent = usWinAscent
+            os2.usWinDescent = usWinDescent
+
+        buffer = io.BytesIO()
+        font.save(buffer)
+
+        # Create a Flask HTTP response with the modified font
+        response = make_response(buffer.getvalue())
+
+        # Set the Content-Type header
+        response.headers['Content-Type'] = mime_type if mime_type else 'application/octet-stream'
+
+        # Set the Content-Disposition header with the correct filename
+        response.headers['Content-Disposition'] = f'attachment; filename={font_file.filename}_modified.ttf'
+
+        # Set the Content-Length header
+        response.headers['Content-Length'] = len(response.data)
+        
+        # Close the buffer
+        buffer.close()
+        return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
