@@ -8,10 +8,7 @@ import mimetypes
 
 app = Flask(__name__)
 # Configure the first CORS instance
-cors1 = CORS(app, resources={r"/api/*": {"origins": "https://font-tweaker-ui.vercel.app"}})
-
-# Configure another CORS instance for a different origin
-cors2 = CORS(app, resources={r"/other_api/*": {"origins": "http://localhost:5173/"}})
+CORS(app, resources={r"/api/*": {"origins": "https://font-tweaker-ui.vercel.app"}})
 
 
 # Helper function to serialize Panose data
