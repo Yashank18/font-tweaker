@@ -48,6 +48,29 @@ def get_font_data():
         return json.dumps(font_data, cls=FontDataEncoder), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@app.route('/api/get-all-font-data', methods=['POST'])
+def get_all_font_data():
+    try:
+        font_url = request.json.get('fontUrl')
+        font = TTFont(io.BytesIO(requests.get(font_url).content))
+
+        # Initialize an empty dictionary to store font data
+        font_data = {}
+
+        # Iterate through all the tables in the font and serialize them
+        for table_tag, table in font.tables.items():
+            # Serialize Panose data from the 'OS/2' table if it exists
+            if table_tag == 'OS/2' and hasattr(table, 'panose'):
+                font_data[table_tag] = serialize_panose(table.panose)
+            else:
+                font_data[table_tag] = table.__dict__
+
+        return json.dumps(font_data, cls=FontDataEncoder), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/get-font-data-buffer', methods=['POST'])
 def extract_font_data_from_buffer():
