@@ -57,15 +57,26 @@ def get_all_font_data():
         font = TTFont(io.BytesIO(requests.get(font_url).content))
 
         # Initialize an empty dictionary to store font data
-        font_data = {}
-
-        # Iterate through all the tables in the font and serialize them
-        for table_tag, table in font.tables.items():
-            # Serialize Panose data from the 'OS/2' table if it exists
-            if table_tag == 'OS/2' and hasattr(table, 'panose'):
-                font_data[table_tag] = serialize_panose(table.panose)
-            else:
-                font_data[table_tag] = table.__dict__
+        font_data = {
+            'hhea': font['hhea'].__dict__,
+            'head': font['head'].__dict__,
+            'os2': font['OS/2'].__dict__,
+            'cmap': font['cmap'].__dict__,
+            'glyf': font['glyf'].__dict__,
+            'loca': font['loca'].__dict__,
+            'name': font['name'].__dict__,
+            'post': font['post'].__dict__,
+            'maxp': font['maxp'].__dict__,
+            'cvt ': font['cvt '].__dict__,  # Note the space after 'cvt'
+            'fpgm': font['fpgm'].__dict__,
+            'prep': font['prep'].__dict__,
+            'hmtx': font['hmtx'].__dict__,
+            'vmtx': font['vmtx'].__dict__,
+        }
+        # Serialize Panose data from the 'OS/2' table
+        os2_table = font['OS/2']
+        if hasattr(os2_table, 'panose'):
+            font_data['os2']['panose'] = serialize_panose(os2_table.panose)
 
         return json.dumps(font_data, cls=FontDataEncoder), 200
     except Exception as e:
