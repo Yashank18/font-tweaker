@@ -56,11 +56,9 @@ def get_all_font_data():
         font_url = request.json.get('fontUrl')
         font = TTFont(io.BytesIO(requests.get(font_url).content))
 
-
-        return json.dumps(font, cls=FontDataEncoder), 200
+        return json.dumps(font.toXML(), indent=4), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/api/get-font-data-buffer', methods=['POST'])
 def extract_font_data_from_buffer():
@@ -172,4 +170,3 @@ def update_font_data_from_file():
         return response
     except Exception as e:
         return jsonify({'error': str(e)}), 400
-
